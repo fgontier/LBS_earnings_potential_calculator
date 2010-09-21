@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"  xmlns:ofc="*"  xmlns:com="com.*"  creationComplete="initApp()">
+	
+	<mx:Style source="assets/css/style.css" />
+	
+	<!--Using real validation tag for Validation-->
+	<mx:Array id="validators">	
+		<mx:NumberValidator id="ageValidator" source="{age}" property="text" minValue="18" maxValue="65" trigger="{Submit}" triggerEvent="click" />
+		<mx:NumberValidator id="incommeValidator" source="{annualIncome}" property="text" trigger="{Submit}" maxValue="500000" triggerEvent="click" />
+		<mx:NumberValidator id="percentageValidator" source="{percentage}" trigger="{Submit}" triggerEvent="click" minValue="0" property="selectedIndex" lowerThanMinError="Please select a percentage." /> 
+	</mx:Array>
+
+	<mx:Script>
+	<![CDATA[
+		
+	import com.globalworks.lbs.tools.AnnualIncomeChart;
+	import com.globalworks.lbs.tools.LifeTimeEarningChart;
+	import mx.validators.Validator;
+	import agi.utils.Format;
+	import json.JParser;
+	
+	private var earningPotential:Number = 0;
+	private var annualIncomeNum:Number = 0;
+	private var percentageChosen:Number = 0;
+	private var valuesArray:Array;
+	private var salaryArray:Array;
+	private var _format:Format = new Format();
+
+		
+	[Bindable] private var jsonStr1:String	
+	[Bindable] private var jsonAnnualIncome:String	
+	[Bindable] private var ourLabelText:String = "Initial Value";
+	[Bindable] private var chart1Text:String = "Initial Value";
+	[Bindable] private var chart2Text:String = "Initial Value";
+
+	private function initApp():void 
+	{
+		Calculate()
+/*		var jsonObj:Object = new Object();
+		jsonAnnualIncome = JParser.encode(jsonObj);
+		trace("jsonAnnualIncome " + jsonAnnualIncome);*/
+	}
+	
+	private function ResetForm(evt:MouseEvent):void 
+	{
+		age.text = "";
+		annualIncome.text = "";
+		percentage.selectedIndex = -1;
+		earningPotential = 0;
+		annualIncomeNum = 0;
+		percentageChosen = 0;
+	}
+	
+	private function Calculate():void 
+	{
+		annualIncomeNum = Number(annualIncome.text)	
+		
+		valuesArray = new Array();
+		salaryArray = new Array();
+		// print result to text field on page2:
+		
+		ourLabelText = "You entered:" + "<br>" +  "Age = " + age.text + "<br>" +  "Annual Income = " + annualIncomeNum + "<br>" +  "Annual Income Rate Increase = " + percentageChosen + "%";
+		
+		for (var i:int = Number(age.text) ; i <= 65; i++) 
+		{
+			earningPotential += annualIncomeNum;
+			annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
+				
+			valuesArray.push(Math.round(earningPotential));
+			
+			if (i <= 65)
+			{
+				salaryArray.push(Math.round(annualIncomeNum));
+			}
+			
+			//trace ("annualIncomeNum " + Math.round(annualIncomeNum));
+		}
+		
+		//var chart1:LifeTimeEarningChart = new LifeTimeEarningChart(valuesArray, Number(age.text));
+		//jsonStr1 = chart1.createJson();
+		//chart1Text = "By the time you retire at age 65, your total lifetimes earnings could be " + _format.currency(valuesArray.pop(), 0, "$"); 
+		
+		
+		var chart2:AnnualIncomeChart = new AnnualIncomeChart(salaryArray, Number(age.text));
+		jsonAnnualIncome = chart2.createJson();
+		chart2Text = "By the time you retire at age 65, your annual salary could be " + _format.currency(salaryArray.pop(), 0, "$");
+	}
+
+	private function changeEvt(event:Event):void 
+	{
+		percentageChosen = 	Number (event.currentTarget.selectedIndex); 
+	}
+
+	]]>
+		
+		
+		
+		
+		
+	</mx:Script>
+
+	<mx:XMLList id="percentageXMLList">
+		<mx:Object label="0 %" data="0" />
+		<percentage label="1 %" data="1" />
+		<percentage label="2 %" data="2" />
+		<percentage label="3 %" data="3" />
+		<percentage label="4 %" data="4" />
+		<percentage label="5 %" data="5" />
+		<percentage label="6 %" data="6" />
+		<percentage label="7 %" data="7" />
+		<percentage label="8 %" data="8" />
+		<percentage label="9 %" data="9" />
+		<percentage label="10 %" data="10" />
+		<percentage label="11 %" data="11" />
+		<percentage label="12 %" data="12" />
+	</mx:XMLList>
+	
+<mx:Canvas>
+	
+	<com:GradientCanvas id="header" styleName="canvasGradientOutside" width="818" height="109" y="10">
+		
+		<mx:Label styleName="canvasTitle" text="What is your earnings potential?" x="305" y="6" />
+		
+		<com:GradientCanvas styleName="canvasGradientInside"  width="806" height="72" x="6" y="32">
+	
+			<mx:Label text="Age:" x="60" y="15" />			
+			<mx:Label text="Annual income:" x="160" y="15" />		
+			<mx:Label text="Annual income rate increase:" x="296" y="15" />		
+			<mx:TextInput id="age" x="62" y="35" width="45" maxChars="2" restrict="0-9" />
+			<mx:TextInput id="annualIncome" x="160" y="35" width="86" restrict="0-9" />		
+			<mx:ComboBox styleName="ComboBox" id="percentage" x="298" y="35" width="205" prompt="Select Income Increase" selectedIndex="-1" dataProvider="{percentageXMLList}" labelField="@label" change="changeEvt(event)" />
+			<mx:Button styleName="button" id="Submit" width="90" x="568" y="35" label="Calculate"  click="if( Validator.validateAll(validators).length==0 ){ Calculate();  }" />
+			<mx:Button styleName="button" width="90" x="685" y="35" label="Reset" click="ResetForm(event)" />	
+			
+		</com:GradientCanvas>	
+	</com:GradientCanvas>	
+	
+
+	<com:GradientCanvas id="chartsContainer" styleName="canvasGradientOutside" gradientRatio = "[0,127]" width="818" height="446" y="138">
+		
+		<mx:Label styleName="canvasTitle" text="Your earnings potential" x="340" y="8" />
+		
+		<com:GradientCanvas styleName="canvasGradientInside"  width="806" height="408" x="6" y="32">
+			
+			 <ofc:Chart id="myIncomeChart" width="806" height="200" loadingString="Loading…" chartData="{jsonAnnualIncome}" ></ofc:Chart>
+
+		</com:GradientCanvas>	
+	</com:GradientCanvas>
+	
+	<mx:Text width="760" styleName="legal" x="10" y="580"> 
+		<mx:text >
+			<![CDATA[
+	This calculator is designed to be informational and educational tools only, and when used alone do not constitute investment advice. The results presented by this calculator are hypothetical and may not reflect actual results. The information is not intended to be considered tax or legal advice. Neither The Guardian Life Insurance Company of America nor its affiliates, subsidiaries, employees or agents (including Guardian Insurance & Annuity Company, Inc. and Park Avenue Securities LLC) are responsible for any human or mechanical errors or omissions arising from the use of these calculators. For further disclosure, please see Disclosure page link below.]]>
+		</mx:text>	
+	</mx:Text>
+	
+</mx:Canvas>
+<!--
+	
+
+			
+-->	
+		<!-- back page 
+		<mx:Panel id="chartContainer" title="Your earnings potential"  width="600" height="520" y="220" >
+	
+			<mx:Text width="100%" color="black"  fontSize="14">
+				<mx:htmlText>
+					{ourLabelText}
+				</mx:htmlText>
+			</mx:Text>	
+	
+			<ofc:Chart id="mySalaryChart" width="550" height="150" loadingString="Loading…" chartData="{jsonAnnualIncome}"></ofc:Chart>
+			
+			<mx:Text width="100%" color="black"  fontSize="12">
+				<mx:htmlText>
+					{chart2Text}
+				</mx:htmlText>
+			</mx:Text>	
+			
+			<ofc:Chart id="myChart" width="550" height="150" loadingString="Loading…" chartData="{jsonStr1}"></ofc:Chart>
+			
+			<mx:Text width="100%" color="black"  fontSize="12">
+				<mx:htmlText>
+					{chart1Text}
+				</mx:htmlText>
+			</mx:Text>		
+			<mx:Button id="Back" styleName="Button" label="Back"  click="{  ResetForm(event) }" />
+
+		</mx:Panel>
+		-->
+	
+</mx:Application>
+
+

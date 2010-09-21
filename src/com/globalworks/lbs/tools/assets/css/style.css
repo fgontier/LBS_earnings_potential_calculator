@@ -1,0 +1,120 @@
+﻿Application
+{
+
+backgroundColor: #ffffff;
+backgroundGradientAlphas: 1,1;
+backgroundGradientColors: #ffffff,#ffffff;
+
+backgroundImage: Embed(source = "../guide_1.png"); 
+
+
+}
+
+.canvasGradientOutside{
+		colorsConfiguration: 2;
+		fillColors: #ffffff, #bfbfbf;
+		fillAlphas:  1,1;
+		gradientRatio: 0,255;
+		angle: 90;
+		cornerRadius: 14;
+		borderThickness: 1.5;
+		borderColors: #CCCCCC;
+
+   dropShadowEnabled: true;
+   shadowDistance: 1;
+   shadowDirection: right;
+   dropShadowColor: #333333;		
+} 
+
+.canvasGradientInside{
+		colorsConfiguration: 2;
+		fillColors: #d9d9d9, #f2f2f2;
+		fillAlphas:  1,1;
+		gradientRatio: 0,255;
+		angle: 90;
+		cornerRadius: 10;
+		borderThickness: 0;
+		borderColors: #CCCCCC;
+} 
+
+.canvasTitle {
+color: #000000;
+textAlign: center;
+fontFamily: Arial;
+fontSize: 14;
+fontWeight: bold;
+} 
+
+Label {
+font-family: "Arial";
+font-size: 13;
+color: #4D4D4D;
+
+}
+
+.legal {
+font-family: "Arial";
+font-size: 7;
+color: #000000;
+textAlign: justify;
+}
+
+.button {
+   cornerRadius: 5;
+   highlightAlphas: 0.62, 0.17;
+   fillAlphas: 0.76, 0.7, 0.3, 0.41;
+   fillColors: #295fa8, #003399, #2e6cc0, #0344c6;
+   color: #ffffff;
+   textRollOverColor: #ffffff;
+   borderColor: #000066;
+   themeColor: #000000; 
+   fontSize: 12;
+}
+
+ComboBox {
+color: #666666;
+borderColor: #7c8181;
+rollOverColor: #DDDDDD;
+themeColor: #cccccc;
+}
+.errorTip {
+borderColor: RED;
+color: white;
+fontSize: 12;
+fontWeight: normal;
+}
+
+TextInput {
+color: #2C5291;
+errorColor: #CA3F3F;
+/*
+color: #000000;
+borderThicknessLeft: 10;
+borderThicknessTop: 10;
+borderThicknessBottom: 10;
+borderThicknessRight: 10;
+*/
+}
+
+/*
+Panel {
+borderStyle: none;
+titleStyleName: "myPanelTitle";
+backgroundImage: Embed(source = "../bgd_1.png");
+borderThicknessTop: 0;
+borderThicknessBottom: 0;
+borderThicknessLeft: 0;
+borderThicknessRight: 0;
+paddingTop: 0;
+paddingLeft: 0;
+paddingRight: 0;
+paddingBottom: 0; 
+borderColor: #7c8181;
+rounded-bottom-corners: true;
+borderAlpha: 1;
+headerColors: #d7d7d7, #7c8181;
+footerColors: #d7d7d7, #7c8181;
+background-color: #ffffff;
+shadow-direction: center;
+} 
+*/

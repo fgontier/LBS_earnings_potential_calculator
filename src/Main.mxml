@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"  xmlns:amcharts="http://www.amcharts.com/com_internal"  xmlns:com="com.*"  creationComplete="initApp()">
+	
+	<mx:Style source="assets/css/style.css" />
+	
+	<!--Using real validation tag for Validation-->
+	<mx:Array id="validators">	
+		<mx:NumberValidator id="ageValidator" source="{age}" property="text" minValue="18" maxValue="64" trigger="{Submit}" triggerEvent="click" />
+		<mx:NumberValidator id="incommeValidator" source="{annualIncome}" property="text" trigger="{Submit}" minValue="1000" maxValue="1000000" triggerEvent="click" />
+		<mx:NumberValidator id="percentageValidator" source="{percentage}" trigger="{Submit}" triggerEvent="click" minValue="0" property="selectedIndex" lowerThanMinError="Please select a percentage." /> 
+	</mx:Array>
+	<mx:CurrencyFormatter id="cf" currencySymbol="" alignSymbol="left"/>
+
+	<mx:Script>
+	<![CDATA[
+		
+	import mx.collections.ArrayCollection;
+	import mx.validators.Validator;
+	import mx.effects.easing.Elastic;
+	import agi.utils.Format;
+	import json.JParser;
+	
+	private var earningPotential:Number = 0;
+	private var annualIncomeNum:int = 0;
+	private var percentageChosen:Number = 0;
+	
+	//private var salaryArray:Array;
+	
+	private var earningArray:Array;
+	
+	private var _format:Format = new Format();
+	
+	[Embed (source = "assets/LBS_logo.swf")]
+    [Bindable] public var LBSlogo:Class;  
+	
+	[Bindable] private var jsonLifetimeEarninngs:String	
+	
+	[Bindable] private var chart1Title:String = "";
+	[Bindable] private var chart2Title:String = "";
+	[Bindable] private var salaryArrayCollection:ArrayCollection = new ArrayCollection;
+	[Bindable] private var earningArrayCollection:ArrayCollection = new ArrayCollection;
+	
+	[Bindable] private var myEarningsChartText1:String = "";
+	[Bindable] private var myEarningsChartText2:String = "";
+	[Bindable] private var myIncomeChartText:String = "";
+
+	private function initApp():void 
+	{
+			salaryArrayCollection.source = [ ];	
+			earningArrayCollection.source = [ ];	
+	}
+	
+	private function ResetForm(evt:MouseEvent):void 
+	{
+		age.text = "";
+		annualIncome.text = "";
+		percentage.selectedIndex = -1;
+		earningPotential = 0;
+		annualIncomeNum = 0;
+		percentageChosen = 0;
+		
+		chart1Title = "";
+		chart2Title = "";
+		myEarningsChartText1 = "";
+		myEarningsChartText2 = "";
+		myIncomeChartText = "";
+		initApp();
+	}
+	
+	private function Calculate():void 
+	{
+		initApp();
+		// change string to int and remove commas:		
+		var myPattern:RegExp = /,/g;
+		annualIncomeNum = int(annualIncome.text.replace(myPattern, ""));
+		
+		// show number in input text with comma formating:
+		annualIncome.text = _format.currency(annualIncomeNum, 0, "");	
+		
+		earningPotential = annualIncomeNum;
+		
+		earningArray = new Array();
+		
+				
+		for (var i:int = Number(age.text) ; i <= 65; i++) 
+		{
+			var salaryArray:Object = new Object( );			
+			salaryArray.year = i;
+			salaryArray.salary =  Math.round(annualIncomeNum);
+			salaryArrayCollection.addItem(salaryArray);
+			
+			var earningArray:Object = new Object( );			
+			earningArray.year = i;
+			earningArray.earningPotential =  Math.round(earningPotential);		
+			earningArrayCollection.addItem(earningArray);
+			
+			annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
+			earningPotential += annualIncomeNum;	
+		}
+		
+		var lastIndex:int = earningArrayCollection.length -1;
+		var Ymax1:int = nearestTo(earningArray[lastIndex]);	
+		
+		chart2Title = "Your Lifetime Earnings"		
+		myEarningsChartText1 = "By the time you retire at age 65, your cumulative lifetime earnings could be " + _format.currency(earningArrayCollection[lastIndex].earningPotential, 0, "$") + "." ;
+		myEarningsChartText2 = "Many people don't think of their income as one of their most valuable assets. Considering how much you could potentially earn over your lifetime may change the way you think about it."; 
+		
+		myIncomeChartText = "By the time you retire at age 65, your annual salary could be " + _format.currency(salaryArrayCollection[lastIndex].salary, 0, "$") + ".";
+		
+
+	}
+
+	private function changeEvt(event:Event):void 
+	{
+		percentageChosen = 	Number (event.currentTarget.selectedIndex); 
+	}
+		
+	private function nearestTo(myNunber:int):int
+	{
+			//trace("myNunber " + myNunber);
+			//trace("length " + myNunber.toString().length);
+			var Ymax:int;
+			// Round a number to nearest multiple of 1000, 10000 or 100000
+				 if (myNunber.toString().length == 4) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 100 }
+			else if (myNunber.toString().length == 5) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 1000 }
+			else if (myNunber.toString().length == 6) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 10000 }
+			else if (myNunber.toString().length == 7) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 100000 }
+			else if (myNunber.toString().length == 8) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 1000000 }
+			else if (myNunber.toString().length == 9) { Ymax = ( 1 + Number(myNunber.toString().substr(0,2))) * 10000000 }
+			return(Ymax)	
+	}	
+	
+    public function linkHandler(event:TextEvent):void 
+	{
+        // Open the link in a new browser window.
+        navigateToURL(new URLRequest(event.text), '_self')
+    }	
+	
+	]]>
+
+	</mx:Script>
+
+	<mx:XMLList id="percentageXMLList">
+		<mx:Object label="0 %" data="0" />
+		<percentage label="1 %" data="1" />
+		<percentage label="2 %" data="2" />
+		<percentage label="3 %" data="3" />
+		<percentage label="4 %" data="4" />
+		<percentage label="5 %" data="5" />
+		<percentage label="6 %" data="6" />
+		<percentage label="7 %" data="7" />
+		<percentage label="8 %" data="8" />
+		<percentage label="9 %" data="9" />
+		<percentage label="10 %" data="10" />
+		<percentage label="11 %" data="11" />
+		<percentage label="12 %" data="12" />
+	</mx:XMLList>
+	
+
+	<mx:Canvas>
+		<mx:filters>
+			<mx:DropShadowFilter alpha="0.6" />
+		</mx:filters>
+		
+		<com:GradientCanvas id="header" styleName="canvasGradientOutside" width="818" height="109" y="10">
+			<mx:Label styleName="canvasTitle" text="What is your earnings potential?" x="315" y="8" />
+			<com:GradientCanvas styleName="canvasGradientInside"  width="806" height="72" x="6" y="32">
+				<mx:Label text="Age:" x="30" y="15" />			
+				<mx:Label text="Annual income:" x="110" y="15" />		
+				<mx:Label text="Annual income rate increase:" x="238" y="15" />		
+				<mx:TextInput id="age" x="32" y="35" width="45" maxChars="2" restrict="0-9" />
+				<mx:Label text="$" x="97" y="38" />
+				<mx:TextInput id="annualIncome" x="110" y="35" width="86" restrict="0-9/,/$" change="annualIncome.text=cf.format(annualIncome.text);"/>			
+				<mx:ComboBox styleName="ComboBox" id="percentage" x="238" y="35" width="205" prompt="Select Income Increase" selectedIndex="-1" dataProvider="{percentageXMLList}" labelField="@label" change="changeEvt(event)" />
+				<mx:Button styleName="button" id="Submit" width="90" x="568" y="35" label="Calculate"  click="if( Validator.validateAll(validators).length==0 ){ Calculate();  }" />
+				<mx:Button styleName="button" width="90" x="685" y="35" label="Reset" click="ResetForm(event)" />		
+			</com:GradientCanvas>	
+		</com:GradientCanvas>	
+		
+		<com:GradientCanvas id="chartsContainer" styleName="canvasGradientOutside" gradientRatio = "[0,127]" width="818" height="545" y="138">
+		  				
+			<mx:Label x="25" y="522" selectable="true" link="linkHandler(event);" styleName="callToAction">
+				<mx:htmlText>
+					<![CDATA[With that knowledge in hand, go to <a href='event:http://www.thelivingbalancesheet.com/get-started'><u>Get Started</u></a> and request a free consultation to find out how you can best protect that valuable asset.]]>
+				</mx:htmlText>
+			</mx:Label>	
+		
+			<com:GradientCanvas styleName="canvasGradientInside" width="806" height="507" x="6" y="6">
+	
+				<mx:TabNavigator width="100%" height="100%">
+					
+					<mx:VBox label="Your Annual Income">
+								
+						<amcharts:AmSerialChart
+						y="20"	
+						rotate="false"
+						color="#447640"
+						width="790"
+						height="380"
+						id="chart"
+						marginTop="10"
+						marginLeft="100"
+						marginRight="10"				 
+						dataProvider="{salaryArrayCollection}"
+						categoryField="year"
+						plotAreaFillAlphas="[0]"
+						startEffect="{Elastic.easeOut}"
+						startDuration="2"
+						depth3D="10" 
+						fontFamily="Arial"
+						angle="30">
+						 
+							<amcharts:graphs>
+							
+								<amcharts:AmGraph
+									fontSize="12" 
+									valueField="salary" 
+									descriptionField="short"
+									type="column" 
+									lineAlpha="0" 
+									fillAlphas="[0.5,1]" 
+									fillColors="[#447640,#64A252]"
+									gradientOrientation="vertical"
+									labelPosition="bottom"
+									balloonText="Age [[category]]: $[[value]]"/>
+								 
+							</amcharts:graphs>
+							
+							<amcharts:valueAxes>
+								<amcharts:ValueAxis stackType="3d" gridAlpha="1" gridColor="#FFFFFF" axisColor="#447640" axisAlpha="1" axisThickness="3" unit="$" unitPosition="left">
+								</amcharts:ValueAxis>
+							</amcharts:valueAxes>			
+						
+							<amcharts:categoryAxis>
+								<amcharts:CategoryAxis gridAlpha="1" gridColor="#ffffff" axisColor="#447640" axisAlpha="1" axisThickness="3"/>
+							</amcharts:categoryAxis>
+				
+						</amcharts:AmSerialChart>	
+					
+						<mx:Canvas>						
+							<mx:Text x="200" y="5" selectable="false">
+								<mx:htmlText>
+									{myIncomeChartText}
+								</mx:htmlText>
+							</mx:Text>
+							<mx:Text x="30" y="35" width="750" selectable="false" fontSize="17" color="#447640">
+								<mx:htmlText>
+									{myEarningsChartText2}
+								</mx:htmlText>
+							</mx:Text>
+						</mx:Canvas>								
+						
+					</mx:VBox>	
+										
+					<mx:VBox label="Your Cumulative Lifetime Earnings" width="100%" height="100%">		
+								
+						<amcharts:AmSerialChart
+						y="20"	
+						rotate="false"
+						color="#447640"
+						width="790"
+						height="380"
+						id="chart2"
+						marginTop="10"
+						marginLeft="100"
+						marginRight="10"			 
+						dataProvider="{earningArrayCollection}"
+						categoryField="year"
+						plotAreaFillAlphas="[0]"
+						startEffect="{Elastic.easeOut}"
+						startDuration="2"
+						depth3D="10" 
+						fontFamily="Arial"
+						angle="30">				 			 
+						 
+						<amcharts:graphs>
+							<amcharts:AmGraph 
+								fontSize="12" 
+								valueField="earningPotential" 
+								descriptionField="short"
+								type="column" 
+								lineAlpha="0" 
+								fillAlphas="[0.5,1]" 
+								fillColors="[#447640,#64A252]"
+								gradientOrientation="vertical"
+								labelPosition="bottom"
+								labelText="[[description]]"
+								balloonText="Age [[category]]: $[[value]]"/>				
+						</amcharts:graphs>
+			
+						<amcharts:valueAxes>
+							<amcharts:ValueAxis stackType="3d" gridAlpha="1" gridColor="#FFFFFF" axisColor="#447640" axisAlpha="1" axisThickness="3" unit="$" unitPosition="left"/>
+						</amcharts:valueAxes>
+				
+						<amcharts:categoryAxis>
+							<amcharts:CategoryAxis gridAlpha="1" gridColor="#ffffff" axisColor="#447640" axisAlpha="1"  axisThickness="3"/>
+						</amcharts:categoryAxis>
+				
+						</amcharts:AmSerialChart>			
+				
+						<mx:Canvas>						
+							<mx:Text x="140" y="5" selectable="false">
+								<mx:htmlText>
+									{myEarningsChartText1}
+								</mx:htmlText>
+							</mx:Text>
+							<mx:Text x="30" y="35" width="750" selectable="false" fontSize="17" color="#447640">
+								<mx:htmlText>
+									{myEarningsChartText2}
+								</mx:htmlText>
+							</mx:Text>
+						</mx:Canvas>	
+						
+					</mx:VBox>
+					
+				</mx:TabNavigator> 	
+				
+			</com:GradientCanvas>
+			
+		</com:GradientCanvas>
+		
+	</mx:Canvas>
+
+	<mx:Canvas width="800" height="60">
+					
+		<mx:Image id="lbslogo" source="{LBSlogo}" x="4" y="13" width="65%" height="65%" />
+
+		<mx:Text styleName="legal" x="180" y="5" selectable="false" width="600" height="55"> 
+			<mx:text>
+				<![CDATA[This calculator is designed to be informational and educational only, and when used alone, does not constitute investment advice. The results presented by this calculator are hypothetical and may not reflect actual results. The information is not intended to be considered tax or legal advice. Neither The Guardian Life Insurance Company of America nor its affiliates, subsidiaries, employees or agents (including Guardian Insurance & Annuity Company, Inc. and Park Avenue Securities LLC) are responsible for any human or mechanical errors or omissions arising from the use of these calculators.]]>
+			</mx:text>	
+		</mx:Text>
+	</mx:Canvas>
+	
+</mx:Application>
+
+
