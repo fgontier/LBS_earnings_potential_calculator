@@ -18,7 +18,7 @@
 	import mx.validators.Validator;
 	import mx.effects.easing.Elastic;
 	import agi.utils.Format;
-	import json.JParser;
+//	import json.JParser;
 	
 	private var earningPotential:Number = 0;
 	private var annualIncomeNum:int = 0;
@@ -179,9 +179,9 @@
 		
 		<com:GradientCanvas id="chartsContainer" styleName="canvasGradientOutside" gradientRatio = "[0,127]" width="818" height="545" y="138">
 		  				
-			<mx:Label x="25" y="522" selectable="true" link="linkHandler(event);" styleName="callToAction">
+			<mx:Label x="100" y="522" selectable="true" link="linkHandler(event);" styleName="callToAction">
 				<mx:htmlText>
-					<![CDATA[With that knowledge in hand, go to <a href='event:http://www.thelivingbalancesheet.com/get-started'><u>Get Started</u></a> and request a free consultation to find out how you can best protect that valuable asset.]]>
+					<![CDATA[With that knowledge in hand, <a href='event:/contact'><u>find an LBS Expert near you</u></a> to see how you can best protect that valuable asset.]]>
 				</mx:htmlText>
 			</mx:Label>	
 		
