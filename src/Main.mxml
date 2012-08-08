@@ -21,7 +21,7 @@
 //	import json.JParser;
 	
 	private var earningPotential:Number = 0;
-	private var annualIncomeNum:int = 0;
+	private var annualIncomeNum:Number = 0;
 	private var percentageChosen:Number = 0;
 	
 	//private var salaryArray:Array;
@@ -86,12 +86,14 @@
 		{
 			var salaryArray:Object = new Object( );			
 			salaryArray.year = i;
-			salaryArray.salary =  Math.round(annualIncomeNum);
+			//salaryArray.salary =  Math.round(annualIncomeNum);
+			salaryArray.salary =  Math.floor(annualIncomeNum);			
 			salaryArrayCollection.addItem(salaryArray);
 			
 			var earningArray:Object = new Object( );			
 			earningArray.year = i;
-			earningArray.earningPotential =  Math.round(earningPotential);		
+//			earningArray.earningPotential =  Math.round(earningPotential);
+			earningArray.earningPotential =  Math.floor(earningPotential);				
 			earningArrayCollection.addItem(earningArray);
 			
 			// old
@@ -102,6 +104,7 @@
 				earningPotential += annualIncomeNum;					
 			}			
 			
+			trace ("age: " + i + " annualIncomeNum " + annualIncomeNum + " earningPotential " + earningPotential)
 		}
 		
 		var lastIndex:int = earningArrayCollection.length -1;
