@@ -94,8 +94,14 @@
 			earningArray.earningPotential =  Math.round(earningPotential);		
 			earningArrayCollection.addItem(earningArray);
 			
-			annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
-			earningPotential += annualIncomeNum;	
+			// old
+			//annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
+			// new
+			if (i < 64) {
+				annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
+				earningPotential += annualIncomeNum;					
+			}			
+			
 		}
 		
 		var lastIndex:int = earningArrayCollection.length -1;
@@ -181,7 +187,7 @@
 		  				
 			<mx:Label x="100" y="522" selectable="true" link="linkHandler(event);" styleName="callToAction">
 				<mx:htmlText>
-					<![CDATA[With that knowledge in hand, <a href='event:/contact'><u>find an LBS Expert near you</u></a> to see how you can best protect that valuable asset.]]>
+					<![CDATA[With that knowledge in hand, <a href='event:/contact' target='_top' class="calc-out"><u>find an LBS Expert near you</u></a> to see how you can best protect that valuable asset.]]>
 				</mx:htmlText>
 			</mx:Label>	
 		
