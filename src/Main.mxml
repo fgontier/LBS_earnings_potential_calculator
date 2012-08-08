@@ -93,7 +93,7 @@
 			var earningArray:Object = new Object( );			
 			earningArray.year = i;
 //			earningArray.earningPotential =  Math.round(earningPotential);
-			earningArray.earningPotential =  Math.floor(earningPotential);				
+//			earningArray.earningPotential =  Math.floor(earningPotential);				
 			earningArrayCollection.addItem(earningArray);
 			
 			// old
@@ -101,8 +101,12 @@
 			// new
 			if (i < 64) {
 				annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
-				earningPotential += annualIncomeNum;					
-			}			
+				//earningPotential += annualIncomeNum;
+				earningArray.earningPotential =  Math.floor(earningPotential);
+				earningPotential += annualIncomeNum;
+			} else {
+				earningArray.earningPotential =  Math.round(earningPotential);
+			}
 			
 			trace ("age: " + i + " annualIncomeNum " + annualIncomeNum + " earningPotential " + earningPotential)
 		}
