@@ -86,29 +86,20 @@
 		{
 			var salaryArray:Object = new Object( );			
 			salaryArray.year = i;
-			//salaryArray.salary =  Math.round(annualIncomeNum);
-			salaryArray.salary =  Math.floor(annualIncomeNum);			
 			salaryArrayCollection.addItem(salaryArray);
+			salaryArray.salary =  Math.round(annualIncomeNum);
 			
 			var earningArray:Object = new Object( );			
 			earningArray.year = i;
-//			earningArray.earningPotential =  Math.round(earningPotential);
-//			earningArray.earningPotential =  Math.floor(earningPotential);				
 			earningArrayCollection.addItem(earningArray);
-			
-			// old
-			//annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
-			// new
+
 			if (i < 64) {
 				annualIncomeNum += (annualIncomeNum * (percentageChosen) / 100);
-				//earningPotential += annualIncomeNum;
-				earningArray.earningPotential =  Math.floor(earningPotential);
+				earningArray.earningPotential =  Math.round(earningPotential);
 				earningPotential += annualIncomeNum;
 			} else {
 				earningArray.earningPotential =  Math.round(earningPotential);
 			}
-			
-			trace ("age: " + i + " annualIncomeNum " + annualIncomeNum + " earningPotential " + earningPotential)
 		}
 		
 		var lastIndex:int = earningArrayCollection.length -1;
