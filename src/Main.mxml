@@ -82,7 +82,7 @@
 		earningArray = new Array();
 		
 				
-		for (var i:int = Number(age.text) ; i <= 65; i++) 
+		for (var i:int = Number(age.text) ; i <= 64; i++) 
 		{
 			var salaryArray:Object = new Object( );			
 			salaryArray.year = i;
@@ -196,23 +196,22 @@
 					<mx:VBox label="Your Annual Income">
 								
 						<amcharts:AmSerialChart
-						y="20"	
-						rotate="false"
-						color="#447640"
-						width="790"
-						height="380"
-						id="chart"
-						marginTop="10"
-						marginLeft="100"
-						marginRight="10"				 
-						dataProvider="{salaryArrayCollection}"
-						categoryField="year"
-						plotAreaFillAlphas="[0]"
-						startEffect="{Elastic.easeOut}"
-						startDuration="2"
-						depth3D="10" 
-						fontFamily="Arial"
-						angle="30">
+							y="20"	
+							rotate="false"
+							color="#447640"
+							width="790"
+							height="380"
+							id="chart"
+							marginTop="10"
+							marginLeft="100"
+							marginRight="10"				 
+							dataProvider="{salaryArrayCollection}"
+							categoryField="year"
+							plotAreaFillAlphas="[0]"
+							startEffect="{Elastic.easeOut}"
+							startDuration="2"
+							depth3D="10" 
+							angle="30">
 						 
 							<amcharts:graphs>
 							
@@ -226,7 +225,8 @@
 									fillColors="[#447640,#64A252]"
 									gradientOrientation="vertical"
 									labelPosition="bottom"
-									balloonText="Age [[category]]: $[[value]]"/>
+									balloonText="Age [[category]]: $[[value]]"
+								/>
 								 
 							</amcharts:graphs>
 							
@@ -236,7 +236,8 @@
 							</amcharts:valueAxes>			
 						
 							<amcharts:categoryAxis>
-								<amcharts:CategoryAxis gridAlpha="1" gridColor="#ffffff" axisColor="#447640" axisAlpha="1" axisThickness="3"/>
+								<!-- amcharts:CategoryAxis gridAlpha="1" gridColor="#ffffff" axisColor="#447640" axisAlpha="1" axisThickness="3" /-->
+								<amcharts:CategoryAxis />
 							</amcharts:categoryAxis>
 				
 						</amcharts:AmSerialChart>	
@@ -274,7 +275,6 @@
 						startEffect="{Elastic.easeOut}"
 						startDuration="2"
 						depth3D="10" 
-						fontFamily="Arial"
 						angle="30">				 			 
 						 
 						<amcharts:graphs>
